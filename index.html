@@ -2,153 +2,186 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GM ❤️ Tangkap Hati GM</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GM - Tebak-Tebakan Cinta</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-  body { background: linear-gradient(#ff9a9e, #fecfef, #ffdde1); font-family: 'Arial', sans-serif; text-align:center; overflow:hidden; height:100vh; }
-  h1 { margin-top:10px; font-size:26px; color:#d6336c; }
-  #info { display:flex; justify-content:space-around; background:white; margin:10px 15px; padding:10px; border-radius:20px; font-weight:bold; }
-  #gameArea { width:92%; max-width:420px; height:60vh; background:rgba(255,255,255,0.7); margin:0 auto; position:relative; border-radius:20px; overflow:hidden; border:3px solid #ff4d6d; touch-action:none; }
-  #player { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); font-size:55px; transition:0.08s; }
-  .jatuh { position:absolute; font-size:38px; top:-50px; }
-  #gombal { height:30px; color:#d6336c; font-weight:bold; margin:10px; font-size:16px; }
-  #startBtn { background:#ff4d6d; color:white; border:none; padding:12px 30px; font-size:18px; border-radius:30px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
-  #popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:99; }
-  #popupBox { background:white; padding:25px; border-radius:20px; width:85%; max-width:350px; }
-  #popupBox h2 { color:#ff4d6d; margin-bottom:10px; }
-  #popupBox p { margin:10px 0; line-height:1.5; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;display:flex;justify-content:center;align-items:center;padding:12px;color:#222}
+  .phone{width:100%;max-width:420px;min-height:88vh;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);display:flex;flex-direction:column;position:relative}
+  .header{background:linear-gradient(90deg,#ff4d6d,#ff758c);padding:14px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center}
+  .logo{font-weight:800;font-size:19px} .logo span{background:#fff;color:#ff4d6d;padding:0 7px;border-radius:8px}
+  .best{font-size:12px;background:rgba(0,0,0,.25);padding:5px 10px;border-radius:20px}
+  .progress{height:8px;background:#ffe0e5} #bar{height:100%;background:#ff4d6d;width:0%;transition:.4s}
+  .hud{display:flex;gap:8px;padding:12px}
+  .card{flex:1;background:#fff5f6;border:1px solid #ffe0e5;border-radius:14px;padding:8px;text-align:center}
+  .card b{font-size:18px;color:#ff4d6d;display:block} .card small{font-size:10px;color:#888;font-weight:700}
+  .content{flex:1;padding:0 16px 16px;display:flex;flex-direction:column}
+  .kategori{display:inline-block;background:#ffeef1;color:#ff4d6d;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:800;align-self:flex-start;margin-bottom:10px}
+  #soal{font-size:20px;font-weight:800;line-height:1.4;min-height:70px}
+  #timerWrap{margin:12px 0;background:#f1f1f1;border-radius:20px;height:10px;overflow:hidden} #timerBar{height:100%;background:#00c9a7;width:100%}
+  .opsi{border:2px solid #eee;background:#fafafa;padding:13px 14px;border-radius:16px;margin-top:10px;cursor:pointer;font-weight:600;font-size:15px;display:flex;justify-content:space-between;align-items:center;transition:.2s}
+  .opsi:active{transform:scale(.98)}
+  .opsi.bener{background:#d4edda!important;border-color:#28a745!important;color:#155724}
+  .opsi.salah{background:#f8d7da!important;border-color:#dc3545!important;color:#721c24}
+  .opsi.disabled{pointer-events:none;opacity:.7}
+  #feedback{min-height:28px;text-align:center;font-weight:700;color:#ff4d6d;margin-top:12px;font-size:14px}
+  .btn{background:#ff4d6d;color:#fff;border:none;padding:14px;border-radius:30px;font-weight:800;font-size:16px;cursor:pointer;width:100%;margin-top:auto;box-shadow:0 8px 20px rgba(255,77,109,.35)}
+  .btn.outline{background:#fff;color:#ff4d6d;border:2px solid #ff4d6d;box-shadow:none;margin-top:10px}
+  .overlay{position:absolute;inset:0;background:rgba(15,12,41,.95);z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;color:#fff}
+  .overlay h1{font-size:32px;line-height:1.1} .overlay h1 span{color:#ff4d6d}
+  .overlay p{color:#ccc;font-size:13px;line-height:1.6;margin:12px 0 18px}
+  .badge{background:#ff4d6d;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800}
+  .love{background:#fff;color:#222;border-radius:16px;padding:16px;text-align:left;font-size:13px;line-height:1.6;margin:12px 0;width:100%}
+  .hidden{display:none!important}
+  .emoji-big{font-size:60px;margin-bottom:10px}
 </style>
 </head>
 <body>
+<div class="phone">
+  <div class="header">
+    <div class="logo">GM <span>TEBAK-TEBAKAN</span></div>
+    <div class="best">🏆 BEST: <span id="bestScore">0</span></div>
+  </div>
+  <div class="progress"><div id="bar"></div></div>
 
-<h1>❤️ GM ❤️</h1>
-<p style="font-size:14px; font-weight:bold;">TANGKAP HATI GM - GAME BY GM</p>
+  <div class="hud">
+    <div class="card"><b id="skor">0</b><small>SKOR</small></div>
+    <div class="card"><b id="soalKe">0 / 10</b><small>SOAL</small></div>
+    <div class="card"><b id="streak">🔥 0</b><small>STREAK</small></div>
+  </div>
 
-<div id="info">
-  <span>⭐ Skor: <span id="skor">0</span></span>
-  <span>❤️ Nyawa: <span id="nyawa">3</span></span>
-  <span>🔥 Level: <span id="level">1</span></span>
-</div>
+  <div class="content" id="gameContent">
+    <span class="kategori" id="kategori">💘 TEBAK-TEBAKAN GM</span>
+    <div id="soal">Klik MULAI dulu...</div>
+    <div id="timerWrap"><div id="timerBar"></div></div>
+    <div id="opsiBox"></div>
+    <div id="feedback"></div>
+    <button class="btn" id="nextBtn" onclick="nextSoal()" style="display:none">SOAL BERIKUTNYA ➡️</button>
+  </div>
 
-<div id="gameArea">
-  <div id="player">🧺</div>
-</div>
+  <!-- START -->
+  <div id="startScreen" class="overlay">
+    <div class="badge">GAME BY GM • V3 PRO</div>
+    <div class="emoji-big">🤔💘</div>
+    <h1>SEBERAPA<br><span>KENAL GM?</span></h1>
+    <p>10 soal tebak-tebakan lucu + romantis.<br>Jawab bener dapet poin, jawab salah dapet hukuman cinta dari GM!<br><br>Waktu per soal: <b style="color:#fff">15 detik</b><br>Target menang: <b style="color:#fff">70 poin</b></p>
+    <button class="btn" onclick="mulaiGame()" style="background:#ff4d6d">▶ MULAI TEBAK-TEBAKAN</button>
+    <p style="font-size:11px;margin-top:12px">GM STUDIO • Dibuat khusus dengan ❤️</p>
+  </div>
 
-<div id="gombal">Klik MULAI, geser keranjangnya!</div>
-<br>
-<button id="startBtn" onclick="mulai()">MULAI MAIN - GM 💖</button>
-
-<div id="popup">
-  <div id="popupBox">
-    <h2 id="popupJudul">Kamu Menang! 🎉</h2>
-    <p id="popupIsi"></p>
-    <button id="startBtn" onclick="location.reload()">MAIN LAGI - GM</button>
+  <!-- END -->
+  <div id="endScreen" class="overlay hidden">
+    <div class="badge" id="endBadge">HASILNYA...</div>
+    <div class="emoji-big" id="endEmoji">🏆</div>
+    <h1 id="endTitle">Kamu Jago!</h1>
+    <p id="endDesc"></p>
+    <div id="loveBox" class="love hidden">
+      <b>Dari GM Untuk Kamu 💌</b><br>
+      Makasih udah mau main tebak-tebakan GM sampe selesai. Dari semua soal tadi, yang paling bener itu adalah: <b>Kamu itu spesial buat GM.</b><br><br>
+      <b>Maukah kamu jadi pacar GM selamanya?</b><br>
+      <span style="font-size:11px;color:#888">SS ini & kirim ke GM ya 😍</span>
+    </div>
+    <button class="btn" onclick="mulaiGame()" style="background:#ff4d6d">🔄 MAIN LAGI</button>
   </div>
 </div>
 
 <script>
-  let skor = 0, nyawa = 3, level = 1, jalan = false;
-  let area = document.getElementById('gameArea');
-  let player = document.getElementById('player');
-  let posX = 50;
+let allSoal = [
+  {kat:"💘 TENTANG GM", q:"Kalau GM lagi kangen, GM biasanya ngapain?", ops:["A. Stalk IG kamu","B. Tidur terus","C. Makan bakso 10 mangkok","D. Main game sampe lupa"], jawab:0, gombal:"Bener! GM selalu stalk IG kamu diam-diam 😍"},
+  {kat:"😂 LUCU", q:"Kenapa hati GM selalu anget?", ops:["A. Karena deket kompor","B. Karena ada kamu di dalamnya","C. Karena demam","D. Karena pake jaket"], jawab:1, gombal:"Iyaa, kamu yang bikin anget ❤️"},
+  {kat:"🤔 LOGIKA CINTA", q:"1 + 1 = ?", ops:["A. 2","B. 11","C. Aku + Kamu = Kita","D. 3"], jawab:2, gombal:"Pinter! Jawabannya kita berdua 😘"},
+  {kat:"🍜 TENTANG GM", q:"Makanan favorit GM kalau lagi bareng kamu?", ops:["A. Apa aja asal sama kamu","B. Nasi Padang","C. Mie Ayam","D. Steak mahal"], jawab:0, gombal:"Asal sama kamu, nasi putih aja enak!"},
+  {kat:"😂 TEBAK-TEBAKAN", q:"Kenapa GM gak bisa move on dari kamu?", ops:["A. Karena WiFi lemot","B. Karena kamu udah ke-save di hati","C. Karena lupa password","D. Karena mager"], jawab:1, gombal:"Hati GM udah ke-lock, password-nya nama kamu!"},
+  {kat:"💘 TENTANG KAMU", q:"Apa yang paling cantik dari kamu menurut GM?", ops:["A. Senyum kamu","B. Rambut kamu","C. Mata kamu","D. Semuanya!"], jawab:3, gombal:"Semuanya cantik! GM gak bisa milih satu!"},
+  {kat:"🤔 JEBakan", q:"Kalau kamu jadi hantu, GM bakal...?", ops:["A. Lari ketakutan","B. Tetep peluk kamu, hantu aja cantik","C. Panggil ustadz","D. Pura-pura pingsan"], jawab:1, gombal:"Hantu aja GM peluk, apalagi kamu yang asli!"},
+  {kat:"🎵 LAGU", q:"Lagu apa yang keinget kalau GM inget kamu?", ops:["A. Lagu galau","B. Semua lagu jadi lagu cinta","C. Lagu dangdut","D. Lagu iklan"], jawab:1, gombal:"Semua lagu jadi tentang kamu sekarang 🎶"},
+  {kat:"💘 SERIUS", q:"Menurut GM, apa arti kata 'sayang'?", ops:["A. Cuma kata","B. Kamu","C. Makanan","D. Nama kucing"], jawab:1, gombal:"Sayang itu = Kamu. Titik."},
+  {kat:"🏆 FINAL", q:"Siapa pemilik hati GM yang sebenarnya?", ops:["A. GM sendiri","B. Kamu","C. Tetangga","D. Mantan GM"], jawab:1, gombal:"BENER BANGET! Kamu pemiliknya! ❤️❤️❤️"},
+  {kat:"😂 BONUS", q:"Kenapa GM bikin game ini?", ops:["A. Gabut","B. Biar kamu seneng + tau GM sayang kamu","C. Tugas sekolah","D. Iseng doang"], jawab:1, gombal:"Biar kamu seneng, itu alasan utamanya!"},
+  {kat:"🤔 BONUS 2", q:"Kalau GM dikasih pilihan: uang 1 Miliar atau kamu?", ops:["A. Uang 1 Miliar","B. Kamu, uang bisa dicari, kamu cuma satu","C. Dua-duanya","D. Bingung"], jawab:1, gombal:"Kamu lah, uang bisa dicari!"},
+];
+let soalDipilih=[], index=0, skor=0, streak=0, timerInt=null, waktu=15, best=parseInt(localStorage.getItem('gm_tebak_best')||'0');
+document.getElementById('bestScore').innerText=best;
 
-  let gombalan = [
-    "Kamu cantik banget sih 😍 - GM",
-    "Hati GM cuma buat kamu ❤️",
-    "Jangan pergi-pergi ya... - GM",
-    "Kamu itu rumah buat GM 🏠",
-    "Senyum kamu bikin hari GM cerah ☀️",
-    "Kamu udah makan belum? - GM 🍜",
-    "GM kangen nih...",
-    "Kamu jago banget mainnya! 😘 - GM"
-  ];
-
-  function mulai(){
-    skor=0; nyawa=3; level=1; jalan=true;
-    document.getElementById('skor').innerText=skor;
-    document.getElementById('nyawa').innerText=nyawa;
-    document.getElementById('level').innerText=level;
-    document.getElementById('gombal').innerText="Ayo tangkap hatinya GM!";
-    document.getElementById('startBtn').style.display='none';
-    spawn();
+function acak(arr){ return arr.sort(()=>Math.random()-0.5).slice(0,10); }
+function mulaiGame(){
+  soalDipilih=acak([...allSoal]); index=0; skor=0; streak=0;
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('endScreen').classList.add('hidden');
+  updateHUD(); tampilSoal();
+}
+function updateHUD(){
+  document.getElementById('skor').innerText=skor;
+  document.getElementById('soalKe').innerText=(index+1)+' / 10';
+  document.getElementById('streak').innerText='🔥 '+streak;
+  document.getElementById('bar').style.width=((index)/10*100)+'%';
+  if(skor>best){best=skor; localStorage.setItem('gm_tebak_best',best); document.getElementById('bestScore').innerText=best;}
+}
+function tampilSoal(){
+  clearInterval(timerInt);
+  let s=soalDipilih[index];
+  document.getElementById('kategori').innerText=s.kat;
+  document.getElementById('soal').innerText=s.q;
+  document.getElementById('feedback').innerText='';
+  document.getElementById('nextBtn').style.display='none';
+  let box=document.getElementById('opsiBox'); box.innerHTML='';
+  s.ops.forEach((o,i)=>{
+    let d=document.createElement('div'); d.className='opsi'; d.innerHTML='<span>'+o+'</span><span>➡️</span>';
+    d.onclick=()=>jawab(i,d); box.appendChild(d);
+  });
+  updateHUD();
+  // Timer 15 detik
+  waktu=15; document.getElementById('timerBar').style.width='100%'; document.getElementById('timerBar').style.background='#00c9a7';
+  timerInt=setInterval(()=>{
+    waktu--; let persen=waktu/15*100; document.getElementById('timerBar').style.width=persen+'%';
+    if(persen<40) document.getElementById('timerBar').style.background='#ff4d6d';
+    if(waktu<=0){ clearInterval(timerInt); waktuHabis(); }
+  },1000);
+}
+function jawab(pilih, el){
+  clearInterval(timerInt);
+  let s=soalDipilih[index];
+  let semua=document.querySelectorAll('.opsi'); semua.forEach(o=>o.classList.add('disabled'));
+  if(pilih===s.jawab){
+    el.classList.add('bener'); skor+=10; streak++;
+    if(streak>=3){ skor+=5; document.getElementById('feedback').innerText='🔥 STREAK x'+streak+'! +15 POIN! '+s.gombal; }
+    else document.getElementById('feedback').innerText='✅ BENER! +10 POIN! '+s.gombal;
+    mainSuara(800);
+  } else {
+    el.classList.add('salah'); semua[s.jawab].classList.add('bener'); streak=0;
+    document.getElementById('feedback').innerText='❌ SALAH! Jawabannya yang ijo. Hukuman: Chat GM "Aku sayang GM" 😘';
+    mainSuara(200);
   }
-
-  function gerak(x){
-    let rect = area.getBoundingClientRect();
-    let persen = ((x - rect.left) / rect.width) * 100;
-    persen = Math.max(5, Math.min(95, persen));
-    posX = persen;
-    player.style.left = persen + "%";
-  }
-  area.addEventListener('mousemove', e => { if(jalan) gerak(e.clientX); });
-  area.addEventListener('touchmove', e => { if(jalan){ gerak(e.touches[0].clientX); e.preventDefault(); } }, {passive:false});
-
-  function spawn(){
-    if(!jalan) return;
-    let item = document.createElement('div');
-    item.className='jatuh';
-    let acak = Math.random();
-    if(acak < 0.65){ item.innerText='❤️'; item.dataset.tipe='hati'; }
-    else if(acak < 0.85){ item.innerText='💔'; item.dataset.tipe='patah'; }
-    else { item.innerText='💣'; item.dataset.tipe='bom'; }
-    item.style.left = Math.random()*85 + "%";
-    area.appendChild(item);
-    let top = -50;
-    let kecepatan = 2 + level * 0.7;
-    let jatuhInterval = setInterval(()=>{
-      if(!jalan){ clearInterval(jatuhInterval); item.remove(); return; }
-      top += kecepatan;
-      item.style.top = top + "px";
-      let itemRect = item.getBoundingClientRect();
-      let playerRect = player.getBoundingClientRect();
-      let areaRect = area.getBoundingClientRect();
-      if(itemRect.bottom >= playerRect.top && itemRect.bottom <= playerRect.bottom + 10 && Math.abs(itemRect.left - playerRect.left) < 50){
-        clearInterval(jatuhInterval);
-        item.remove();
-        if(item.dataset.tipe==='hati'){
-          skor+=10;
-          document.getElementById('skor').innerText=skor;
-          document.getElementById('gombal').innerText = gombalan[Math.floor(Math.random()*gombalan.length)];
-          if(skor % 100 === 0){
-            level++;
-            document.getElementById('level').innerText=level;
-            document.getElementById('gombal').innerText = "NAIK LEVEL " + level + "! Makin cepet nih! 🔥 - GM";
-          }
-          if(skor >= 200){ menang(); }
-        } else {
-          nyawa--;
-          document.getElementById('nyawa').innerText=nyawa;
-          document.getElementById('gombal').innerText = "Aduh! Kena " + item.innerText + " ! Hati-hati!";
-          if(nyawa <= 0) kalah();
-        }
-        return;
-      }
-      if(top > areaRect.height){
-        clearInterval(jatuhInterval);
-        item.remove();
-        if(item.dataset.tipe==='hati'){
-          nyawa--;
-          document.getElementById('nyawa').innerText=nyawa;
-          if(nyawa <=0) kalah();
-        }
-      }
-    }, 20);
-    setTimeout(spawn, Math.max(400, 1000 - level*100));
-  }
-
-  function menang(){
-    jalan=false;
-    document.getElementById('popup').style.display='flex';
-    document.getElementById('popupJudul').innerText="KAMU MENANG! ❤️ - GM";
-    document.getElementById('popupIsi').innerHTML="Kamu udah berhasil nangkep <b>200 hati</b> dari GM.<br><br>Artinya kamu udah resmi jadi pemilik hati GM sepenuhnya.<br><br><b>Maukah kamu jadi pacar GM selamanya?</b> 😍<br><br>SS ini terus kirim ke GM ya!";
-  }
-  function kalah(){
-    jalan=false;
-    document.getElementById('popup').style.display='flex';
-    document.getElementById('popupJudul').innerText="Yah, Hati GM Jatuh 💔";
-    document.getElementById('popupIsi').innerHTML="Skor kamu: <b>"+skor+"</b><br><br>Gak apa-apa, hati GM emang susah ditangkep.<br>Coba lagi ya, GM tungguin... ❤️";
-  }
+  updateHUD();
+  document.getElementById('nextBtn').style.display='block';
+}
+function waktuHabis(){
+  let s=soalDipilih[index];
+  let semua=document.querySelectorAll('.opsi'); semua.forEach(o=>o.classList.add('disabled')); semua[s.jawab].classList.add('bener'); streak=0;
+  document.getElementById('feedback').innerText='⏰ WAKTU HABIS! Jawabannya yang ijo. Cepetan dikit!';
+  document.getElementById('nextBtn').style.display='block';
+}
+function nextSoal(){
+  index++;
+  if(index>=10){ selesai(); } else { tampilSoal(); }
+}
+function selesai(){
+  document.getElementById('endScreen').classList.remove('hidden');
+  document.getElementById('bar').style.width='100%';
+  let persen=skor; // max 100+bonus
+  let judul, emoji, desc;
+  if(skor>=80){ judul='KAMU 100% KENAL GM!'; emoji='🏆💘'; desc='Skor kamu: '+skor+' / 100+. Gila, kamu kenal GM luar dalam! Ini udah bukan kenal lagi, ini udah jodoh!'; }
+  else if(skor>=50){ judul='KAMU LUMAYAN KENAL GM!'; emoji='😍'; desc='Skor kamu: '+skor+'. Lumayan kenal GM, tinggal dikit lagi jadi pacar GM nih!'; }
+  else { judul='KAMU HARUS LEBIH DEKET LAGI!'; emoji='🥺'; desc='Skor kamu: '+skor+'. Wah, kamu harus lebih sering chat-an sama GM nih biar kenal!'; }
+  document.getElementById('endTitle').innerText=judul;
+  document.getElementById('endEmoji').innerText=emoji;
+  document.getElementById('endDesc').innerText=desc;
+  document.getElementById('loveBox').classList.remove('hidden');
+  if(skor>=80) document.getElementById('endBadge').innerText='🏆 KECOCOKAN 100%';
+  else document.getElementById('endBadge').innerText='💘 HASIL KECOCOKAN';
+}
+function mainSuara(f){ try{ let c=new (window.AudioContext||window.webkitAudioContext)(); let o=c.createOscillator(),g=c.createGain(); o.connect(g); g.connect(c.destination); o.frequency.value=f; o.type='sine'; g.gain.setValueAtTime(0.12,c.currentTime); g.gain.exponentialRampToValueAtTime(0.01,c.currentTime+0.12); o.start(); o.stop(c.currentTime+0.12);}catch(e){} }
 </script>
 </body>
 </html>
