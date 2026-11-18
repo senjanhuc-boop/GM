@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GM ❤️ Tangkap Hati GM</title>
+<style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+  body { background: linear-gradient(#ff9a9e, #fecfef, #ffdde1); font-family: 'Arial', sans-serif; text-align:center; overflow:hidden; height:100vh; }
+  h1 { margin-top:10px; font-size:26px; color:#d6336c; }
+  #info { display:flex; justify-content:space-around; background:white; margin:10px 15px; padding:10px; border-radius:20px; font-weight:bold; }
+  #gameArea { width:92%; max-width:420px; height:60vh; background:rgba(255,255,255,0.7); margin:0 auto; position:relative; border-radius:20px; overflow:hidden; border:3px solid #ff4d6d; touch-action:none; }
+  #player { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); font-size:55px; transition:0.08s; }
+  .jatuh { position:absolute; font-size:38px; top:-50px; }
+  #gombal { height:30px; color:#d6336c; font-weight:bold; margin:10px; font-size:16px; }
+  #startBtn { background:#ff4d6d; color:white; border:none; padding:12px 30px; font-size:18px; border-radius:30px; cursor:pointer; box-shadow:0 4px 10px rgba(0,0,0,0.2); }
+  #popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); justify-content:center; align-items:center; z-index:99; }
+  #popupBox { background:white; padding:25px; border-radius:20px; width:85%; max-width:350px; }
+  #popupBox h2 { color:#ff4d6d; margin-bottom:10px; }
+  #popupBox p { margin:10px 0; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<h1>❤️ GM ❤️</h1>
+<p style="font-size:14px; font-weight:bold;">TANGKAP HATI GM - GAME BY GM</p>
+
+<div id="info">
+  <span>⭐ Skor: <span id="skor">0</span></span>
+  <span>❤️ Nyawa: <span id="nyawa">3</span></span>
+  <span>🔥 Level: <span id="level">1</span></span>
+</div>
+
+<div id="gameArea">
+  <div id="player">🧺</div>
+</div>
+
+<div id="gombal">Klik MULAI, geser keranjangnya!</div>
+<br>
+<button id="startBtn" onclick="mulai()">MULAI MAIN - GM 💖</button>
+
+<div id="popup">
+  <div id="popupBox">
+    <h2 id="popupJudul">Kamu Menang! 🎉</h2>
+    <p id="popupIsi"></p>
+    <button id="startBtn" onclick="location.reload()">MAIN LAGI - GM</button>
+  </div>
+</div>
+
+<script>
+  let skor = 0, nyawa = 3, level = 1, jalan = false;
+  let area = document.getElementById('gameArea');
+  let player = document.getElementById('player');
+  let posX = 50;
+
+  let gombalan = [
+    "Kamu cantik banget sih 😍 - GM",
+    "Hati GM cuma buat kamu ❤️",
+    "Jangan pergi-pergi ya... - GM",
+    "Kamu itu rumah buat GM 🏠",
+    "Senyum kamu bikin hari GM cerah ☀️",
+    "Kamu udah makan belum? - GM 🍜",
+    "GM kangen nih...",
+    "Kamu jago banget mainnya! 😘 - GM"
+  ];
+
+  function mulai(){
+    skor=0; nyawa=3; level=1; jalan=true;
+    document.getElementById('skor').innerText=skor;
+    document.getElementById('nyawa').innerText=nyawa;
+    document.getElementById('level').innerText=level;
+    document.getElementById('gombal').innerText="Ayo tangkap hatinya GM!";
+    document.getElementById('startBtn').style.display='none';
+    spawn();
+  }
+
+  function gerak(x){
+    let rect = area.getBoundingClientRect();
+    let persen = ((x - rect.left) / rect.width) * 100;
+    persen = Math.max(5, Math.min(95, persen));
+    posX = persen;
+    player.style.left = persen + "%";
+  }
+  area.addEventListener('mousemove', e => { if(jalan) gerak(e.clientX); });
+  area.addEventListener('touchmove', e => { if(jalan){ gerak(e.touches[0].clientX); e.preventDefault(); } }, {passive:false});
+
+  function spawn(){
+    if(!jalan) return;
+    let item = document.createElement('div');
+    item.className='jatuh';
+    let acak = Math.random();
+    if(acak < 0.65){ item.innerText='❤️'; item.dataset.tipe='hati'; }
+    else if(acak < 0.85){ item.innerText='💔'; item.dataset.tipe='patah'; }
+    else { item.innerText='💣'; item.dataset.tipe='bom'; }
+    item.style.left = Math.random()*85 + "%";
+    area.appendChild(item);
+    let top = -50;
+    let kecepatan = 2 + level * 0.7;
+    let jatuhInterval = setInterval(()=>{
+      if(!jalan){ clearInterval(jatuhInterval); item.remove(); return; }
+      top += kecepatan;
+      item.style.top = top + "px";
+      let itemRect = item.getBoundingClientRect();
+      let playerRect = player.getBoundingClientRect();
+      let areaRect = area.getBoundingClientRect();
+      if(itemRect.bottom >= playerRect.top && itemRect.bottom <= playerRect.bottom + 10 && Math.abs(itemRect.left - playerRect.left) < 50){
+        clearInterval(jatuhInterval);
+        item.remove();
+        if(item.dataset.tipe==='hati'){
+          skor+=10;
+          document.getElementById('skor').innerText=skor;
+          document.getElementById('gombal').innerText = gombalan[Math.floor(Math.random()*gombalan.length)];
+          if(skor % 100 === 0){
+            level++;
+            document.getElementById('level').innerText=level;
+            document.getElementById('gombal').innerText = "NAIK LEVEL " + level + "! Makin cepet nih! 🔥 - GM";
+          }
+          if(skor >= 200){ menang(); }
+        } else {
+          nyawa--;
+          document.getElementById('nyawa').innerText=nyawa;
+          document.getElementById('gombal').innerText = "Aduh! Kena " + item.innerText + " ! Hati-hati!";
+          if(nyawa <= 0) kalah();
+        }
+        return;
+      }
+      if(top > areaRect.height){
+        clearInterval(jatuhInterval);
+        item.remove();
+        if(item.dataset.tipe==='hati'){
+          nyawa--;
+          document.getElementById('nyawa').innerText=nyawa;
+          if(nyawa <=0) kalah();
+        }
+      }
+    }, 20);
+    setTimeout(spawn, Math.max(400, 1000 - level*100));
+  }
+
+  function menang(){
+    jalan=false;
+    document.getElementById('popup').style.display='flex';
+    document.getElementById('popupJudul').innerText="KAMU MENANG! ❤️ - GM";
+    document.getElementById('popupIsi').innerHTML="Kamu udah berhasil nangkep <b>200 hati</b> dari GM.<br><br>Artinya kamu udah resmi jadi pemilik hati GM sepenuhnya.<br><br><b>Maukah kamu jadi pacar GM selamanya?</b> 😍<br><br>SS ini terus kirim ke GM ya!";
+  }
+  function kalah(){
+    jalan=false;
+    document.getElementById('popup').style.display='flex';
+    document.getElementById('popupJudul').innerText="Yah, Hati GM Jatuh 💔";
+    document.getElementById('popupIsi').innerHTML="Skor kamu: <b>"+skor+"</b><br><br>Gak apa-apa, hati GM emang susah ditangkep.<br>Coba lagi ya, GM tungguin... ❤️";
+  }
+</script>
+</body>
+</html>
